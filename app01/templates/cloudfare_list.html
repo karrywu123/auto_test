@@ -1,0 +1,174 @@
+{% extends 'layout.html' %}
+{% load rbac %}
+
+{% block content %}
+    <div class="luffy-container">
+        <div class="btn-group" style="margin: 5px 0">
+              {% if request|has_permission:'cf_domian_add' %}
+                <a class="btn btn-default" href="{% memory_url request 'cf_domian_add' %}">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i> 添加cloudfare域名
+                </a>
+            {% endif %}
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>cloudflare域名</th>
+                <th>cloudflare域名ID</th>
+                <th>cloudflare域名状态</th>
+                <th>cloudflare域名的NS</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in cloudflare_list_domain %}
+                <tr class="{% if row.name|safe %}active {% endif %}">
+                    <td>
+                        <a href="?domain={{ row.name }}">{{ row.name }}</a>
+                    </td>
+                    <td>{{ row.id }}</td>
+                    <td>{{ row.status }}</td>
+                    <td>{{ row.name_servers }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+    <h4>域名记录管理</h4>
+    <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>cloudflare域名</th>
+                <th>cloudflare域名记录ID</th>
+                <th>cloudflare域名记录类型</th>
+                <th>cloudflare域名的记录值</th>
+                <th>是否用了CF的节点</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in cloudflare_domain_record %}
+                <tr>
+                    <td>{{ row.zone_name }}</td>
+                    <td>{{ row.zone_id }}</td>
+                    <td>{{ row.type }}</td>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.proxied }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+    <button id="add">点击添加域名记录</button>
+        <div id="form" style="display:none;" >
+                <form>
+                        {% csrf_token %}
+                         域名：<input type="text" name="domain" id="dm" placeholder="baidu.com">
+                         记录类型：<input type="text" name="domain_type" id="dm_ty" placeholder="A/cname">
+                         域名指向：<input type="text" name="domain_ip" id="dm_ip" placeholder="127.0.0.1">
+                         域名的记录值：<input type="text" name="domain_record" id="dm_rd" placeholder="www">
+                        <input type="button" class="btn btn-default dom_btn" value="submit"><span class="error"></span>
+                        <button id="close">取消</button>
+                </form>
+        </div>
+    </div>
+    <div>
+    <button id="del">点击删除域名记录</button>
+        <div id="delform" style="display:none;" >
+                <form>
+                        {% csrf_token %}
+                         域名：<input type="text" name="domain" id="del_dm" placeholder="baidu.com">
+                         域名的记录值：<input type="text" name="domain_record" id="del_dm_rd" placeholder="www.baidu.com">
+                        <input type="button" class="btn1 btn-default del_dom_btn" value="submit"><span class="error"></span>
+                        <button id="del_close">取消</button>
+                </form>
+        </div>
+    </div>
+    <script src="/static/js/jquery-3.3.1.min.js "></script>
+        <script type="text/javascript">
+                $("#add").click(function(){
+                        $("#form").show();
+                })
+                $("#del").click(function(){
+                        $("#delform").show();
+                })
+                 $("#del_close").click(function(){
+                       $("#delform").empty();
+                       location.reload();
+
+                })
+                $("#close").click(function(){
+                       $("#form").empty();
+                       location.reload();
+
+                })
+                $(".dom_btn").click(function () {
+                      $.ajax({
+                        url: "",
+                        type: "post",
+                        data: {
+                            dm: $("#dm").val(),
+                            dm_ty: $("#dm_ty").val(),
+                            dm_ip: $("#dm_ip").val(),
+                            dm_rd: $("#dm_rd").val(),
+                            csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                        },
+                        success: function (data) {
+                            console.log(data);
+
+                            if (data.dm) {
+                                if (location.search){
+                                    location.href = location.search.slice(0)
+
+                                }
+                                else {
+                                     location.href = "/domain/cloudfare_list/"
+                                }
+
+                            }
+                            else {
+                                $(".error").text(data.msg).css({"color": "red", "margin-left": "10px"});
+                                setTimeout(function(){
+                                     $(".error").text("");
+                                },5000)
+
+                            }
+                        }
+                    })
+
+                })
+                $(".del_dom_btn").click(function () {
+                      $.ajax({
+                        url: "",
+                        type: "post",
+                        data: {
+                            del_dm: $("#del_dm").val(),
+                            del_dm_rd: $("#del_dm_rd").val(),
+                            csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                        },
+                        success: function (data) {
+                            console.log(data);
+
+                            if (data.del_dm) {
+                                if (location.search){
+                                    location.href = location.search.slice(0)
+
+                                }
+                                else {
+                                     location.href = "/domain/cloudfare_list/"
+                                }
+
+                            }
+                            else {
+                                $(".error").text(data.msg).css({"color": "red", "margin-left": "10px"});
+                                setTimeout(function(){
+                                     $(".error").text("");
+                                },5000)
+
+                            }
+                        }
+                    })
+
+                })
+        </script>
+{% endblock %}

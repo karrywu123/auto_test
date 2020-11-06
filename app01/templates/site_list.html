@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+{% load rbac %}
+
+{% block content %}
+    <div class="luffy-container">
+        <div class="btn-group" style="margin: 5px 0">
+
+{#            {% if request|has_permission:'host_add' %}#}
+                <a class="btn btn-default" href="#">
+                    <i class="fa fa-plus-square" aria-hidden="true"></i> 添加站点
+                </a>
+{#            {% endif %}#}
+
+        </div>
+        <div>
+        <label>选择站点<select name="dropdown">
+            {% for name in siteList %}
+                <option  id="name" value="{{name}}">{{name}}</option>
+            {% endfor %}
+        </select>
+        </label>
+        <button type="button" class="btn btn-warning" id="btnSearch"><i class="fa fa-search"></i> 搜索</button>
+        </div>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>站点名称</th>
+                <th>站点演示域名</th>
+                <th>站点的cname</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+{% endblock %}
