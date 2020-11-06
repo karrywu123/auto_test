@@ -35,7 +35,7 @@ class Godaddy_API(object):
     def update_domains_ns(self,domain,nameServer):
         url = 'https://api.godaddy.com/v1/domains/' + domain
         nsdata = nameServer.split(',')
-        data = {"locked": True, "nameServers": nsdata, "renewAuto": True, "subaccountId": ''}
+        data = {"locked": True, "nameServers": nsdata, "renewAuto": True, "subaccountId": '客户编号'}
         data = json.dumps(data)
         data01 = str(data)
         req=requests.patch(url, data=data01, headers=self.head)
