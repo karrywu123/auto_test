@@ -11,9 +11,9 @@ import sys
 import json
 '''
 客户编号
-288003118
+
 用户名
-855cash
+
 '''
 
 head = {'Accept': 'application/json', 'Content-Type': 'application/json','Authorization': ''} #Production
@@ -35,7 +35,7 @@ class Godaddy_API(object):
     def update_domains_ns(self,domain,nameServer):
         url = 'https://api.godaddy.com/v1/domains/' + domain
         nsdata = nameServer.split(',')
-        data = {"locked": True, "nameServers": nsdata, "renewAuto": True, "subaccountId": '288003118'}
+        data = {"locked": True, "nameServers": nsdata, "renewAuto": True, "subaccountId": ''}
         data = json.dumps(data)
         data01 = str(data)
         req=requests.patch(url, data=data01, headers=self.head)
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     for i in g.list_all_domains():
         print(i)
         print(i['domainId'], i['domain'], i['status'], i['expires'])
-    #print(g.list_domains_detail('9888ct.com'))
+    #print(g.list_domains_detail(''))
 
 
 
