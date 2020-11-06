@@ -9,7 +9,7 @@ import hashlib
 import requests
 import sys
 import json
-values = {"HOST":"18.163.221.20","UID":"60003","SKEY":"Zbb4Z2hJxPNB3PQu","PRODUCT":"256"}
+values = {"HOST":"","UID":"","SKEY":"","PRODUCT":""}
 from jinja2 import Template
 from jinja2 import PackageLoader,Environment,Template,FileSystemLoader
 #md5加密
