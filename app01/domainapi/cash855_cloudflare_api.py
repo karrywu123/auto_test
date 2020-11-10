@@ -232,8 +232,8 @@ if __name__ == '__main__':
     # for i in c.list_all_domain_record('oppaier.com'):
     #     print(i)
     #print(c.Purge_Cache('855crown.com'))
-    for i in (c.list_all_domain_record('w855.bet')):
+    for i in (c.list_all_domain_record('baidu.com')):
         print(i)
     #w855.bet 192.168.30.3 A www1 True
-    # print(c.add_domain_record('A','www2','192.168.0.1','w855.bet'))
-    print(c.del_domain_record('w855.cc','www1.w855.cc'))
+    # print(c.add_domain_record('A','www2','192.168.0.1','baidu.com'))
+    print(c.del_domain_record('baidu.com','www1.baidu.com'))
