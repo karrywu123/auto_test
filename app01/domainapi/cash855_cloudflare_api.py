@@ -219,7 +219,42 @@ class cloudflare(object):
         data1 = str(data)
         req = requests.patch(url,data=data1,headers=val)
         return req.json()
+    ##列出高级防火墙规则
+    def list_domain_firewall_rules(self,domain):
+        domain_id=self.chice_zone_id(domain)
+        url = "https://api.cloudflare.com/client/v4/zones/"+domain_id+"/firewall/rules?page=1&per_page=100"
+        val = {'X-Auth-Email': self.Email, 'X-Auth-Key': self.auth_api_key, 'Content-Type': self.content_type,'X-Auth-User-Service-Key': self.user_service_api_key}
+        req= requests.get(url,headers=val)
+        return req.json()
 
+    def create_domain_firewall_rules(self, domain,action,expression,description):
+        '''
+        action : block, challenge, js_challenge, allow, log, bypass, rewrite
+        :param domain:
+        :return:
+        '''
+        domain_id = self.chice_zone_id(domain)
+        url="https://api.cloudflare.com/client/v4/zones/"+domain_id +"/firewall/rules"
+        val = {'X-Auth-Email': self.Email, 'X-Auth-Key': self.auth_api_key, 'Content-Type': self.content_type,'X-Auth-User-Service-Key': self.user_service_api_key}
+        data=[{"action":action,"action_parameters":{"uri":{"path":{"value":"/blog"},"query":{"value":"page=0"}}},
+               "priority":50,"paused":False,
+               "description":description,
+               "filter":{"expression": expression,"paused":False}}]
+        data = json.dumps(data)
+        data1 = str(data)
+        req = requests.post(url,data=data1,headers=val)
+        return req.json()
+
+        # 列出全局账户下面指定域名下面的高级的防火墙规则ID
+    def delete_domain_firewall_rules(self,domain,rules_id):
+        domain_id = self.chice_zone_id(domain)
+        url = "https://api.cloudflare.com/client/v4/zones/" + domain_id + "/firewall/rules"
+        val = {'X-Auth-Email': self.Email, 'X-Auth-Key': self.auth_api_key, 'Content-Type': self.content_type,'X-Auth-User-Service-Key': self.user_service_api_key}
+        data={"id":rules_id}
+        data = json.dumps(data)
+        data1 = str(data)
+        req = requests.delete(url, data=data1, headers=val)
+        return req.json()
 
 if __name__ == '__main__':
     c = cloudflare()
@@ -237,3 +272,11 @@ if __name__ == '__main__':
     #w855.bet 192.168.30.3 A www1 True
     # print(c.add_domain_record('A','www2','192.168.0.1','baidu.com'))
     print(c.del_domain_record('baidu.com','www1.baidu.com'))
+        for i in c.list_domain_firewall_rules('w855.cc')['result']:
+        print(i)
+    #加高级防火墙规则
+    #print(c.create_domain_firewall_rules('w855.cc','js_challenge', '(http.host in {"www.123.com" "123.com" "m.123.com"})', '防御测试api01'))
+    #print(c.create_domain_firewall_rules('w855.cc, 'js_challenge','(http.host eq "www.123.com" and http.host eq "123.com")', '防御测试api02'))
+    #print(c.create_domain_firewall_rules('w855.cc', 'js_challenge','(http.request.uri.path eq "/cn/ground-station")', '防御测试api'))
+    #print(c.create_domain_firewall_rules('w855.cc', 'js_challenge','(http.request.uri.path eq "/api/announcements" and ip.src eq 210.177.50.226 and ip.src eq 210.177.50.225)', '防御测试api'))
+    #print(c.create_domain_firewall_rules('w855.cc', 'block','(http.request.uri.path eq "/api/announcements" and ip.src eq 210.177.50.226 and ip.src eq 210.177.50.225 and http.host contains "www.baidu.com" and http.host contains "baidu.com")', '防御测试api'))
